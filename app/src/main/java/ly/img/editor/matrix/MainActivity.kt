@@ -1,15 +1,16 @@
 package ly.img.editor.matrix
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import ly.img.editor.ApparelEditor
+import ly.img.editor.EditorDefaults
+import ly.img.editor.EngineConfiguration
 import ly.img.editor.matrix.ui.theme.EditorMatrixTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,25 +20,17 @@ class MainActivity : ComponentActivity() {
             EditorMatrixTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Greeting("Android")
+                    val sceneUri = Uri.parse("file:///android_asset/apparel.scene")
+                    ApparelEditor(engineConfiguration = EngineConfiguration(
+                        license = BuildConfig.LICENSE,
+                        onCreate = { engine, eventHandler ->
+                            EditorDefaults.onCreate(engine = engine, sceneUri = sceneUri, eventHandler = eventHandler)
+                        }
+                    )) {
+                        finish()
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    EditorMatrixTheme {
-        Greeting("Android")
     }
 }

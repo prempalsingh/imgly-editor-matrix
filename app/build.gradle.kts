@@ -1,6 +1,15 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+}
+
+fun localLicense(): String {
+    val propertiesFile = File(rootDir, "local.properties")
+    val properties = Properties()
+    properties.load(propertiesFile.inputStream())
+    return properties.getProperty("license")
 }
 
 android {
@@ -20,6 +29,10 @@ android {
         }
     }
 
+    buildTypes.forEach {
+        it.buildConfigField("String", "LICENSE", "\"${System.getenv()["LICENSE"] ?: localLicense()}\"")
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -35,6 +48,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
@@ -47,7 +61,7 @@ android {
 }
 
 dependencies {
-
+    implementation("ly.img:editor:1.21.0")
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
